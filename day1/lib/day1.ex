@@ -1,11 +1,5 @@
 defmodule Day1 do
-  def file_stream(path) do
-    path
-    |> File.stream!()
-    |> Stream.map(&String.trim(&1))
-    |> Stream.map(&String.to_integer(&1))
-  end
-
+  
   def part1(file_path) do
     file_path
     |> file_stream()
@@ -32,5 +26,12 @@ defmodule Day1 do
   defp needed_fuel(mass) do
     (div(mass, 3) - 2)
     |> max(0)
+  end
+  
+  defp file_stream(path) do
+    path
+    |> File.stream!()
+    |> Stream.map(&String.trim(&1))
+    |> Stream.map(&String.to_integer(&1))
   end
 end
