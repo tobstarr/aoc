@@ -8,11 +8,16 @@ defmodule Aoc.Y2019.D3 do
 
   def part1(input \\ processed()) do
     input
-    |> Enum.with_index()
-    |> Enum.reduce(%{}, fn {instructions, i}, grid ->
-      calculate_grid(grid, instructions, i)
-    end)
-    |> get_points_with_intersections()
+    |> calculate_grid()
+    |> points_with_intersections()
+    |> closest_distance()
+  end
+
+  def part2(_input \\ processed()) do
+  end
+
+  defp closest_distance(intersections) do
+    intersections
     |> Enum.reduce(:infinity, fn {x, y}, closest_distance ->
       md = manhattan_distance({0, 0}, {x, y})
 
@@ -23,10 +28,15 @@ defmodule Aoc.Y2019.D3 do
     end)
   end
 
-  def part2(_input \\ processed()) do
+  defp calculate_grid(all_instructions) do
+    all_instructions
+    |> Enum.with_index()
+    |> Enum.reduce(%{}, fn {wire_instructions, i}, grid ->
+      add_wire_points_to_grid(grid, wire_instructions, i)
+    end)
   end
 
-  defp calculate_grid(grid, instructions, wire_id) do
+  defp add_wire_points_to_grid(grid, instructions, wire_id) do
     instructions
     |> Enum.reduce({grid, {0, 0}}, fn instruction, {grid, current_point} ->
       instruction
@@ -79,7 +89,7 @@ defmodule Aoc.Y2019.D3 do
     {grid, {x + distance, y}}
   end
 
-  defp get_points_with_intersections(grid) do
+  defp points_with_intersections(grid) do
     grid
     |> Enum.reduce([], fn {point, intersections}, list ->
       case Enum.uniq(intersections) do
