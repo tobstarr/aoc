@@ -1,17 +1,17 @@
-defmodule  Aoc.Y2019.D2 do
-  use  Aoc.Boilerplate,
-      transform: fn raw ->
-        raw
-        |> String.split(",")
-        |> Enum.map(&String.to_integer(&1))
-      end
-      
+defmodule Aoc.Y2019.D2 do
+  use Aoc.Boilerplate,
+    transform: fn raw ->
+      raw
+      |> String.split(",")
+      |> Enum.map(&String.to_integer(&1))
+    end
+
   def part1(input \\ processed()) do
     lookup_table(input)
     |> Map.merge(%{1 => 12, 2 => 2})
     |> process()
   end
-  
+
   def part2(input \\ processed()) do
     lookup = lookup_table(input)
 
@@ -30,13 +30,13 @@ defmodule  Aoc.Y2019.D2 do
     {noun, verb} = result[19690720]
     100 * noun + verb
   end
-  
+
   defp lookup_table(list) do
     0..length(list) - 1
     |> Stream.zip(list)
     |> Enum.into(%{})
   end
-  
+
   defp process(lookup, position \\ 0) do
     case lookup[position] do
       99 ->
@@ -47,12 +47,12 @@ defmodule  Aoc.Y2019.D2 do
         |> process(position + 4)
     end
   end
-  
+
   defp run_operation(lookup, 1, x_position, y_position, z_position) do
     lookup
     |> Map.put(z_position, lookup[x_position] + lookup[y_position])
   end
-  
+
   defp run_operation(lookup, 2, x_position, y_position, z_position) do
     lookup
     |> Map.put(z_position, lookup[x_position] * lookup[y_position])
