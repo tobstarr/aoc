@@ -1,4 +1,4 @@
-defmodule  Aoc do
+defmodule Aoc do
   @solutions %{2019 => [1, 2]}
 
   @solutions
@@ -23,5 +23,4 @@ defmodule  Aoc do
       m.main(spoil)
     end)
   end
-  
 end

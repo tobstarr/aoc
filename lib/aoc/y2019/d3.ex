@@ -9,8 +9,7 @@ defmodule Aoc.Y2019.D3 do
   def part1(input \\ processed()) do
     input
   end
-  
+
   def part2(input \\ processed()) do
-    
   end
 end

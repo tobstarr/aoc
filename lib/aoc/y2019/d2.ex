@@ -16,23 +16,21 @@ defmodule Aoc.Y2019.D2 do
     lookup = lookup_table(input)
 
     result =
-      for noun <- 0..99,
-          verb <- 0..99, into: %{} do
-      
+      for noun <- 0..99, verb <- 0..99, into: %{} do
         processed =
           lookup
           |> Map.merge(%{1 => noun, 2 => verb})
           |> process()
-      
+
         {processed, {noun, verb}}
       end
-    
-    {noun, verb} = result[19690720]
+
+    {noun, verb} = result[19_690_720]
     100 * noun + verb
   end
 
   defp lookup_table(list) do
-    0..length(list) - 1
+    0..(length(list) - 1)
     |> Stream.zip(list)
     |> Enum.into(%{})
   end
@@ -41,6 +39,7 @@ defmodule Aoc.Y2019.D2 do
     case lookup[position] do
       99 ->
         lookup[0]
+
       opcode ->
         lookup
         |> run_operation(opcode, lookup[position + 1], lookup[position + 2], lookup[position + 3])

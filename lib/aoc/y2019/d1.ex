@@ -1,6 +1,6 @@
 defmodule Aoc.Y2019.D1 do
   use Aoc.Boilerplate,
-   transform: fn raw -> raw |> String.split() |> Enum.map(&String.to_integer(&1)) end
+    transform: fn raw -> raw |> String.split() |> Enum.map(&String.to_integer(&1)) end
 
   def part1(input \\ processed()) do
     input
