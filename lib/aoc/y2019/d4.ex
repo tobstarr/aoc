@@ -38,13 +38,17 @@ defmodule Aoc.Y2019.D4 do
   end
 
   defp valid_password?([a, b, c, d, e, f])
-       when never_decrease?(a, b, c, d, e, f) and same_adjacent_digits?(a, b, c, d, e, f),
-       do: true
+       when never_decrease?(a, b, c, d, e, f) and
+              same_adjacent_digits?(a, b, c, d, e, f) do
+    true
+  end
 
   defp valid_password?(_), do: false
 
-  def really_valid_password?([a, b, c, d, e, f]) when strict_adjacent_digits?(a, b, c, d, e, f),
-    do: true
+  def really_valid_password?([a, b, c, d, e, f])
+      when strict_adjacent_digits?(a, b, c, d, e, f) do
+    true
+  end
 
   def really_valid_password?(_), do: false
 end
