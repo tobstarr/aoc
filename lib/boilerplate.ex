@@ -1,4 +1,4 @@
-defmodule  Aoc.Boilerplate do
+defmodule Aoc.Boilerplate do
   defstruct [:raw, :file, :transform, :part1, :part2]
 
   defmacro __using__(opts), do: using(opts, __CALLER__)
