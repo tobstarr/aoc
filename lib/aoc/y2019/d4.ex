@@ -15,6 +15,13 @@ defmodule Aoc.Y2019.D4 do
   defguard same_adjacent_digits?(a, b, c, d, e, f)
            when a == b or b == c or c == d or d == e or e == f
 
+  defguard strict_adjacent_digits?(a, b, c, d, e, f)
+           when (a == b and b != c) or
+                  (a != b and b == c and c != d) or
+                  (b != c and c == d and d != e) or
+                  (c != d and d == e and e != f) or
+                  (d != e and e == f)
+
   def part1(input \\ processed()) do
     input
     |> Flow.from_enumerable()
@@ -31,28 +38,13 @@ defmodule Aoc.Y2019.D4 do
   end
 
   defp valid_password?([a, b, c, d, e, f])
-       when never_decrease?(a, b, c, d, e, f) and same_adjacent_digits?(a, b, c, d, e, f) do
-    true
-  end
+       when never_decrease?(a, b, c, d, e, f) and same_adjacent_digits?(a, b, c, d, e, f),
+       do: true
 
-  defp valid_password?(_) do
-    false
-  end
+  defp valid_password?(_), do: false
 
-  def really_valid_password?(digits) do
-    digits
-    |> make_sequence()
-    |> Enum.find(fn {_k, v} -> v == 2 end)
-  end
+  def really_valid_password?([a, b, c, d, e, f]) when strict_adjacent_digits?(a, b, c, d, e, f),
+    do: true
 
-  def make_sequence(digits, previous \\ nil, sequence \\ %{})
-
-  def make_sequence([], _previous, sequence), do: sequence
-
-  def make_sequence([head | rest], previous, sequence) do
-    case head == previous do
-      true -> make_sequence(rest, head, Map.update(sequence, head, 2, &(&1 + 1)))
-      false -> make_sequence(rest, head, sequence)
-    end
-  end
+  def really_valid_password?(_), do: false
 end
