@@ -6,7 +6,7 @@ defmodule Aoc.Y2019.D4 do
         |> String.split("-")
         |> Enum.map(&String.to_integer(&1))
 
-      Range.new(from, to)
+      Range.new(from, to) |> Flow.from_enumerable()
     end
 
   defguard never_decrease?(a, b, c, d, e, f)
@@ -24,15 +24,12 @@ defmodule Aoc.Y2019.D4 do
 
   def part1(input \\ processed()) do
     input
-    |> Flow.from_enumerable()
     |> Flow.filter(&valid_password?(Integer.digits(&1)))
     |> Enum.count()
   end
 
   def part2(input \\ processed()) do
     input
-    |> Flow.from_enumerable()
-    |> Flow.filter(&valid_password?(Integer.digits(&1)))
     |> Flow.filter(&really_valid_password?(Integer.digits(&1)))
     |> Enum.count()
   end
@@ -46,7 +43,8 @@ defmodule Aoc.Y2019.D4 do
   defp valid_password?(_), do: false
 
   def really_valid_password?([a, b, c, d, e, f])
-      when strict_adjacent_digits?(a, b, c, d, e, f) do
+      when never_decrease?(a, b, c, d, e, f) and
+             strict_adjacent_digits?(a, b, c, d, e, f) do
     true
   end
 
