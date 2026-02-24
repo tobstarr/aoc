@@ -1,0 +1,560 @@
+{
+  "metadata": {
+    "captured_at": "2026-02-24T10:15:32.481922+00:00",
+    "origin": "Nürnberg, Am Schlag",
+    "destination": "Nürnberg, Hauptbahnhof",
+    "total_requests": 47,
+    "xhr_fetch_requests": 5,
+    "other_requests": 42,
+    "note": "Example output — captured data will vary depending on the time of day and current schedule."
+  },
+  "xhr_and_fetch": [
+    {
+      "timestamp": "2026-02-24T10:15:18.112000+00:00",
+      "request": {
+        "url": "https://efa.vgn.de/vgnExt_oeffi/XML_STOPFINDER_REQUEST?language=de&outputFormat=JSON&type_sf=any&name_sf=N%C3%BCrnberg%2C%20Am%20Schlag&coordOutputFormat=WGS84%5BDD.ddddd%5D&locationServerActive=1",
+        "method": "GET",
+        "headers": {
+          "accept": "application/json, text/javascript, */*; q=0.01",
+          "accept-language": "de-DE,de;q=0.9",
+          "x-requested-with": "XMLHttpRequest",
+          "referer": "https://www.vgn.de/verbindungen/",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        },
+        "post_data": null,
+        "resource_type": "xhr",
+        "is_navigation_request": false
+      },
+      "response": {
+        "url": "https://efa.vgn.de/vgnExt_oeffi/XML_STOPFINDER_REQUEST?language=de&outputFormat=JSON&type_sf=any&name_sf=N%C3%BCrnberg%2C%20Am%20Schlag&coordOutputFormat=WGS84%5BDD.ddddd%5D&locationServerActive=1",
+        "status": 200,
+        "status_text": "OK",
+        "headers": {
+          "content-type": "application/json;charset=UTF-8",
+          "cache-control": "no-cache, no-store",
+          "access-control-allow-origin": "*"
+        },
+        "body": {
+          "version": "10.6.14.22",
+          "stopFinder": {
+            "input": {
+              "input": "Nürnberg, Am Schlag"
+            },
+            "points": [
+              {
+                "usage": "sf",
+                "type": "any",
+                "name": "Nürnberg, Am Schlag",
+                "stateless": "de:09564000:3112:2:1",
+                "anyType": "stop",
+                "sort": "2",
+                "quality": "870",
+                "best": "1",
+                "object": "Am Schlag",
+                "postcode": "90482",
+                "mainLoc": "Nürnberg",
+                "ref": {
+                  "id": "3112",
+                  "gid": "de:09564000:3112",
+                  "omc": "09564000",
+                  "placeID": "1",
+                  "place": "Nürnberg",
+                  "coords": "11.11842,49.45283"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-24T10:15:20.534000+00:00",
+      "request": {
+        "url": "https://efa.vgn.de/vgnExt_oeffi/XML_STOPFINDER_REQUEST?language=de&outputFormat=JSON&type_sf=any&name_sf=N%C3%BCrnberg%2C%20Hauptbahnhof&coordOutputFormat=WGS84%5BDD.ddddd%5D&locationServerActive=1",
+        "method": "GET",
+        "headers": {
+          "accept": "application/json, text/javascript, */*; q=0.01",
+          "accept-language": "de-DE,de;q=0.9",
+          "x-requested-with": "XMLHttpRequest",
+          "referer": "https://www.vgn.de/verbindungen/",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        },
+        "post_data": null,
+        "resource_type": "xhr",
+        "is_navigation_request": false
+      },
+      "response": {
+        "url": "https://efa.vgn.de/vgnExt_oeffi/XML_STOPFINDER_REQUEST?language=de&outputFormat=JSON&type_sf=any&name_sf=N%C3%BCrnberg%2C%20Hauptbahnhof&coordOutputFormat=WGS84%5BDD.ddddd%5D&locationServerActive=1",
+        "status": 200,
+        "status_text": "OK",
+        "headers": {
+          "content-type": "application/json;charset=UTF-8",
+          "cache-control": "no-cache, no-store",
+          "access-control-allow-origin": "*"
+        },
+        "body": {
+          "version": "10.6.14.22",
+          "stopFinder": {
+            "input": {
+              "input": "Nürnberg, Hauptbahnhof"
+            },
+            "points": [
+              {
+                "usage": "sf",
+                "type": "any",
+                "name": "Nürnberg, Hauptbahnhof",
+                "stateless": "de:09564000:510:2:1",
+                "anyType": "stop",
+                "sort": "2",
+                "quality": "970",
+                "best": "1",
+                "object": "Hauptbahnhof",
+                "postcode": "90402",
+                "mainLoc": "Nürnberg",
+                "ref": {
+                  "id": "510",
+                  "gid": "de:09564000:510",
+                  "omc": "09564000",
+                  "placeID": "1",
+                  "place": "Nürnberg",
+                  "coords": "11.08222,49.44563"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-24T10:15:23.871000+00:00",
+      "request": {
+        "url": "https://efa.vgn.de/vgnExt_oeffi/XML_TRIP_REQUEST2?language=de&outputFormat=JSON&coordOutputFormat=WGS84%5BDD.ddddd%5D&locationServerActive=1&stateless=1&sessionID=0&requestID=0&type_origin=stop&name_origin=de%3A09564000%3A3112&type_destination=stop&name_destination=de%3A09564000%3A510&itdDate=20260224&itdTime=1015&itdTripDateTimeDepArr=dep&calcNumberOfTrips=5&ptOptionsActive=1&itOptionsActive=1&routeType=LEASTTIME&changeSpeed=normal&useRealtime=1&inclMOT_0=on&inclMOT_1=on&inclMOT_2=on&inclMOT_3=on&inclMOT_4=on&inclMOT_5=on&inclMOT_6=on&inclMOT_7=on&inclMOT_8=on&inclMOT_9=on&inclMOT_10=on&inclMOT_11=on",
+        "method": "GET",
+        "headers": {
+          "accept": "application/json, text/javascript, */*; q=0.01",
+          "accept-language": "de-DE,de;q=0.9",
+          "x-requested-with": "XMLHttpRequest",
+          "referer": "https://www.vgn.de/verbindungen/",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        },
+        "post_data": null,
+        "resource_type": "xhr",
+        "is_navigation_request": false
+      },
+      "response": {
+        "url": "https://efa.vgn.de/vgnExt_oeffi/XML_TRIP_REQUEST2?language=de&outputFormat=JSON&coordOutputFormat=WGS84%5BDD.ddddd%5D&locationServerActive=1&stateless=1&sessionID=0&requestID=0&type_origin=stop&name_origin=de%3A09564000%3A3112&type_destination=stop&name_destination=de%3A09564000%3A510&itdDate=20260224&itdTime=1015&itdTripDateTimeDepArr=dep&calcNumberOfTrips=5&ptOptionsActive=1&itOptionsActive=1&routeType=LEASTTIME&changeSpeed=normal&useRealtime=1&inclMOT_0=on&inclMOT_1=on&inclMOT_2=on&inclMOT_3=on&inclMOT_4=on&inclMOT_5=on&inclMOT_6=on&inclMOT_7=on&inclMOT_8=on&inclMOT_9=on&inclMOT_10=on&inclMOT_11=on",
+        "status": 200,
+        "status_text": "OK",
+        "headers": {
+          "content-type": "application/json;charset=UTF-8",
+          "cache-control": "no-cache, no-store",
+          "access-control-allow-origin": "*",
+          "transfer-encoding": "chunked"
+        },
+        "body": {
+          "version": "10.6.14.22",
+          "systemMessages": [],
+          "tripRequest": {
+            "odv": {
+              "origin": {
+                "type": "stop",
+                "name": "Nürnberg, Am Schlag",
+                "id": "de:09564000:3112",
+                "coord": [11.11842, 49.45283]
+              },
+              "destination": {
+                "type": "stop",
+                "name": "Nürnberg, Hauptbahnhof",
+                "id": "de:09564000:510",
+                "coord": [11.08222, 49.44563]
+              }
+            },
+            "trips": [
+              {
+                "duration": 17,
+                "interchange": 0,
+                "legs": [
+                  {
+                    "duration": 17,
+                    "origin": {
+                      "name": "Nürnberg, Am Schlag",
+                      "departureTimePlanned": "2026-02-24T10:21:00+01:00",
+                      "departureTimeEstimated": "2026-02-24T10:21:00+01:00",
+                      "id": "de:09564000:3112",
+                      "platform": "1",
+                      "coord": [11.11842, 49.45283]
+                    },
+                    "destination": {
+                      "name": "Nürnberg, Hauptbahnhof",
+                      "arrivalTimePlanned": "2026-02-24T10:38:00+01:00",
+                      "arrivalTimeEstimated": "2026-02-24T10:39:00+01:00",
+                      "id": "de:09564000:510",
+                      "platform": "3",
+                      "coord": [11.08222, 49.44563]
+                    },
+                    "transportation": {
+                      "id": "vgn:35009:E:H",
+                      "name": "Straßenbahn 9",
+                      "number": "9",
+                      "product": {
+                        "id": 1,
+                        "class": 1,
+                        "name": "Straßenbahn",
+                        "iconId": 3
+                      },
+                      "operator": {
+                        "id": "VAG",
+                        "name": "VAG Verkehrs-Aktiengesellschaft Nürnberg"
+                      },
+                      "destination": {
+                        "name": "Nürnberg, Doku-Zentrum",
+                        "id": "de:09564000:593"
+                      }
+                    },
+                    "stopSequence": [
+                      {"name": "Nürnberg, Am Schlag", "id": "de:09564000:3112", "departureTimePlanned": "2026-02-24T10:21:00+01:00"},
+                      {"name": "Nürnberg, Tafelgelände", "id": "de:09564000:3111", "arrivalTimePlanned": "2026-02-24T10:23:00+01:00", "departureTimePlanned": "2026-02-24T10:23:00+01:00"},
+                      {"name": "Nürnberg, Wodanstraße", "id": "de:09564000:752", "arrivalTimePlanned": "2026-02-24T10:25:00+01:00", "departureTimePlanned": "2026-02-24T10:25:00+01:00"},
+                      {"name": "Nürnberg, Gleißhammerstraße", "id": "de:09564000:751", "arrivalTimePlanned": "2026-02-24T10:27:00+01:00", "departureTimePlanned": "2026-02-24T10:27:00+01:00"},
+                      {"name": "Nürnberg, Wöhrder Wiese", "id": "de:09564000:700", "arrivalTimePlanned": "2026-02-24T10:30:00+01:00", "departureTimePlanned": "2026-02-24T10:30:00+01:00"},
+                      {"name": "Nürnberg, Rathenauplatz", "id": "de:09564000:630", "arrivalTimePlanned": "2026-02-24T10:32:00+01:00", "departureTimePlanned": "2026-02-24T10:32:00+01:00"},
+                      {"name": "Nürnberg, Marientorgraben", "id": "de:09564000:620", "arrivalTimePlanned": "2026-02-24T10:35:00+01:00", "departureTimePlanned": "2026-02-24T10:35:00+01:00"},
+                      {"name": "Nürnberg, Hauptbahnhof", "id": "de:09564000:510", "arrivalTimePlanned": "2026-02-24T10:38:00+01:00"}
+                    ],
+                    "hints": [
+                      {"content": "Niederflurfahrzeug"}
+                    ]
+                  }
+                ],
+                "fare": {
+                  "zones": [
+                    {"net": "vgn", "fromId": "100", "toId": "100"}
+                  ],
+                  "tickets": [
+                    {"name": "Einzelfahrkarte", "currency": "EUR", "priceBrutto": 3.20, "priceNetto": 2.99},
+                    {"name": "TagesTicket Solo", "currency": "EUR", "priceBrutto": 8.80, "priceNetto": 8.22}
+                  ]
+                }
+              },
+              {
+                "duration": 22,
+                "interchange": 1,
+                "legs": [
+                  {
+                    "duration": 8,
+                    "origin": {
+                      "name": "Nürnberg, Am Schlag",
+                      "departureTimePlanned": "2026-02-24T10:26:00+01:00",
+                      "departureTimeEstimated": "2026-02-24T10:27:00+01:00",
+                      "id": "de:09564000:3112",
+                      "platform": "1",
+                      "coord": [11.11842, 49.45283]
+                    },
+                    "destination": {
+                      "name": "Nürnberg, Wöhrder Wiese",
+                      "arrivalTimePlanned": "2026-02-24T10:34:00+01:00",
+                      "arrivalTimeEstimated": "2026-02-24T10:34:00+01:00",
+                      "id": "de:09564000:700",
+                      "platform": "2",
+                      "coord": [11.09472, 49.45167]
+                    },
+                    "transportation": {
+                      "id": "vgn:35009:E:H",
+                      "name": "Straßenbahn 9",
+                      "number": "9",
+                      "product": {
+                        "id": 1,
+                        "class": 1,
+                        "name": "Straßenbahn",
+                        "iconId": 3
+                      },
+                      "operator": {
+                        "id": "VAG",
+                        "name": "VAG Verkehrs-Aktiengesellschaft Nürnberg"
+                      },
+                      "destination": {
+                        "name": "Nürnberg, Doku-Zentrum",
+                        "id": "de:09564000:593"
+                      }
+                    },
+                    "stopSequence": [],
+                    "hints": []
+                  },
+                  {
+                    "duration": 3,
+                    "isFootpath": true,
+                    "origin": {
+                      "name": "Nürnberg, Wöhrder Wiese",
+                      "departureTimePlanned": "2026-02-24T10:34:00+01:00",
+                      "id": "de:09564000:700"
+                    },
+                    "destination": {
+                      "name": "Nürnberg, Wöhrder Wiese (U)",
+                      "arrivalTimePlanned": "2026-02-24T10:37:00+01:00",
+                      "id": "de:09564000:701"
+                    },
+                    "transportation": {
+                      "name": "Fußweg",
+                      "product": {
+                        "name": "Fußweg"
+                      }
+                    }
+                  },
+                  {
+                    "duration": 4,
+                    "origin": {
+                      "name": "Nürnberg, Wöhrder Wiese (U)",
+                      "departureTimePlanned": "2026-02-24T10:40:00+01:00",
+                      "departureTimeEstimated": "2026-02-24T10:40:00+01:00",
+                      "id": "de:09564000:701",
+                      "platform": "1",
+                      "coord": [11.09500, 49.45200]
+                    },
+                    "destination": {
+                      "name": "Nürnberg, Hauptbahnhof",
+                      "arrivalTimePlanned": "2026-02-24T10:44:00+01:00",
+                      "arrivalTimeEstimated": "2026-02-24T10:44:00+01:00",
+                      "id": "de:09564000:510",
+                      "platform": "U2",
+                      "coord": [11.08222, 49.44563]
+                    },
+                    "transportation": {
+                      "id": "vgn:32002:E:H",
+                      "name": "U-Bahn U2",
+                      "number": "U2",
+                      "product": {
+                        "id": 3,
+                        "class": 3,
+                        "name": "U-Bahn",
+                        "iconId": 5
+                      },
+                      "operator": {
+                        "id": "VAG",
+                        "name": "VAG Verkehrs-Aktiengesellschaft Nürnberg"
+                      },
+                      "destination": {
+                        "name": "Nürnberg, Röthenbach",
+                        "id": "de:09564000:1620"
+                      }
+                    },
+                    "stopSequence": [
+                      {"name": "Nürnberg, Wöhrder Wiese (U)", "id": "de:09564000:701", "departureTimePlanned": "2026-02-24T10:40:00+01:00"},
+                      {"name": "Nürnberg, Hauptbahnhof", "id": "de:09564000:510", "arrivalTimePlanned": "2026-02-24T10:44:00+01:00"}
+                    ],
+                    "hints": []
+                  }
+                ],
+                "fare": {
+                  "zones": [
+                    {"net": "vgn", "fromId": "100", "toId": "100"}
+                  ],
+                  "tickets": [
+                    {"name": "Einzelfahrkarte", "currency": "EUR", "priceBrutto": 3.20, "priceNetto": 2.99},
+                    {"name": "TagesTicket Solo", "currency": "EUR", "priceBrutto": 8.80, "priceNetto": 8.22}
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-24T10:15:17.203000+00:00",
+      "request": {
+        "url": "https://www.vgn.de/wp-json/wp/v2/pages?slug=verbindungen&_fields=id,title,content",
+        "method": "GET",
+        "headers": {
+          "accept": "application/json, text/javascript, */*; q=0.01",
+          "accept-language": "de-DE,de;q=0.9",
+          "x-requested-with": "XMLHttpRequest",
+          "referer": "https://www.vgn.de/",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        },
+        "post_data": null,
+        "resource_type": "fetch",
+        "is_navigation_request": false
+      },
+      "response": {
+        "url": "https://www.vgn.de/wp-json/wp/v2/pages?slug=verbindungen&_fields=id,title,content",
+        "status": 200,
+        "status_text": "OK",
+        "headers": {
+          "content-type": "application/json; charset=UTF-8",
+          "x-wp-total": "1",
+          "x-wp-totalpages": "1",
+          "cache-control": "max-age=300"
+        },
+        "body": [
+          {
+            "id": 1042,
+            "title": {"rendered": "Verbindungen"},
+            "content": {"rendered": "<div class=\"efa-widget\">...</div>"}
+          }
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-02-24T10:15:15.890000+00:00",
+      "request": {
+        "url": "https://www.vgn.de/wp-admin/admin-ajax.php",
+        "method": "POST",
+        "headers": {
+          "accept": "*/*",
+          "accept-language": "de-DE,de;q=0.9",
+          "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+          "x-requested-with": "XMLHttpRequest",
+          "referer": "https://www.vgn.de/",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        },
+        "post_data": "action=load_search_widget&nonce=a3b2c1d4e5",
+        "resource_type": "xhr",
+        "is_navigation_request": false
+      },
+      "response": {
+        "url": "https://www.vgn.de/wp-admin/admin-ajax.php",
+        "status": 200,
+        "status_text": "OK",
+        "headers": {
+          "content-type": "application/json; charset=UTF-8",
+          "cache-control": "no-cache"
+        },
+        "body": {
+          "success": true,
+          "data": {
+            "html": "<div class=\"search-widget-container\">...</div>"
+          }
+        }
+      }
+    }
+  ],
+  "other_requests": [
+    {
+      "timestamp": "2026-02-24T10:15:14.001000+00:00",
+      "request": {
+        "url": "https://www.vgn.de/",
+        "method": "GET",
+        "headers": {
+          "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+          "accept-language": "de-DE,de;q=0.9",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        },
+        "post_data": null,
+        "resource_type": "document",
+        "is_navigation_request": true
+      },
+      "response": {
+        "url": "https://www.vgn.de/",
+        "status": 200,
+        "status_text": "OK",
+        "headers": {
+          "content-type": "text/html; charset=UTF-8",
+          "server": "nginx",
+          "x-powered-by": "PHP/8.1",
+          "cache-control": "max-age=600, public"
+        },
+        "body": "<!DOCTYPE html><html lang=\"de\">... (HTML document truncated)"
+      }
+    },
+    {
+      "timestamp": "2026-02-24T10:15:14.320000+00:00",
+      "request": {
+        "url": "https://www.vgn.de/wp-content/themes/vgn/assets/css/main.min.css?v=3.2.1",
+        "method": "GET",
+        "headers": {
+          "accept": "text/css,*/*;q=0.1",
+          "referer": "https://www.vgn.de/",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        },
+        "post_data": null,
+        "resource_type": "stylesheet",
+        "is_navigation_request": false
+      },
+      "response": {
+        "url": "https://www.vgn.de/wp-content/themes/vgn/assets/css/main.min.css?v=3.2.1",
+        "status": 200,
+        "status_text": "OK",
+        "headers": {
+          "content-type": "text/css; charset=UTF-8",
+          "cache-control": "max-age=31536000, public"
+        },
+        "body": "<could not read body: Response body is unavailable for resource type stylesheet>"
+      }
+    },
+    {
+      "timestamp": "2026-02-24T10:15:14.450000+00:00",
+      "request": {
+        "url": "https://www.vgn.de/wp-content/themes/vgn/assets/js/main.min.js?v=3.2.1",
+        "method": "GET",
+        "headers": {
+          "accept": "*/*",
+          "referer": "https://www.vgn.de/",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        },
+        "post_data": null,
+        "resource_type": "script",
+        "is_navigation_request": false
+      },
+      "response": {
+        "url": "https://www.vgn.de/wp-content/themes/vgn/assets/js/main.min.js?v=3.2.1",
+        "status": 200,
+        "status_text": "OK",
+        "headers": {
+          "content-type": "application/javascript; charset=UTF-8",
+          "cache-control": "max-age=31536000, public"
+        },
+        "body": "<could not read body: Response body is unavailable for resource type script>"
+      }
+    },
+    {
+      "timestamp": "2026-02-24T10:15:14.600000+00:00",
+      "request": {
+        "url": "https://www.vgn.de/wp-content/themes/vgn/assets/img/logo-vgn.svg",
+        "method": "GET",
+        "headers": {
+          "accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+          "referer": "https://www.vgn.de/",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        },
+        "post_data": null,
+        "resource_type": "image",
+        "is_navigation_request": false
+      },
+      "response": {
+        "url": "https://www.vgn.de/wp-content/themes/vgn/assets/img/logo-vgn.svg",
+        "status": 200,
+        "status_text": "OK",
+        "headers": {
+          "content-type": "image/svg+xml",
+          "cache-control": "max-age=31536000, public"
+        },
+        "body": "<could not read body: Response body is unavailable for resource type image>"
+      }
+    },
+    {
+      "timestamp": "2026-02-24T10:15:14.750000+00:00",
+      "request": {
+        "url": "https://www.vgn.de/wp-content/themes/vgn/assets/fonts/VGNSans-Regular.woff2",
+        "method": "GET",
+        "headers": {
+          "accept": "*/*",
+          "referer": "https://www.vgn.de/wp-content/themes/vgn/assets/css/main.min.css?v=3.2.1",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        },
+        "post_data": null,
+        "resource_type": "font",
+        "is_navigation_request": false
+      },
+      "response": {
+        "url": "https://www.vgn.de/wp-content/themes/vgn/assets/fonts/VGNSans-Regular.woff2",
+        "status": 200,
+        "status_text": "OK",
+        "headers": {
+          "content-type": "font/woff2",
+          "cache-control": "max-age=31536000, public"
+        },
+        "body": "<binary 45832 bytes>"
+      }
+    }
+  ]
+}

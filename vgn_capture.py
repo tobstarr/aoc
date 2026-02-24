@@ -12,9 +12,17 @@ Requirements:
 """
 
 import json
-import time
+import os
+import shutil
 from datetime import datetime, timezone
 from playwright.sync_api import sync_playwright, Response, Request
+
+# Use CHROMIUM_PATH env var if set, otherwise default Playwright path.
+CHROMIUM_PATH = os.environ.get("CHROMIUM_PATH", None)
+
+ORIGIN = "Nürnberg, Am Schlag"
+DESTINATION = "Nürnberg, Hauptbahnhof"
+OUTPUT_FILE = "vgn_network_capture.json"
 
 
 def make_serializable(obj):
@@ -39,8 +47,8 @@ def try_parse_json(text):
         return text
 
 
-def capture_response_safely(response: Response):
-    """Safely extract response body, handling failures gracefully."""
+def read_body(response: Response):
+    """Safely read the response body after the response has finished."""
     try:
         body_bytes = response.body()
         body_text = body_bytes.decode("utf-8", errors="replace")
@@ -49,35 +57,145 @@ def capture_response_safely(response: Response):
         return f"<could not read body: {exc}>"
 
 
-def build_request_record(request: Request):
-    """Build a dict with all relevant request information."""
-    return {
-        "url": request.url,
-        "method": request.method,
-        "headers": request.headers,
-        "post_data": request.post_data,
-        "resource_type": request.resource_type,
-        "is_navigation_request": request.is_navigation_request(),
-    }
+def accept_cookies(page):
+    """Try to find and click the cookie-consent 'accept all' button."""
+    selectors = [
+        "button:has-text('Alle akzeptieren')",
+        "button:has-text('Alle Cookies akzeptieren')",
+        "button:has-text('Akzeptieren')",
+        "button:has-text('Alles akzeptieren')",
+        "a:has-text('Alle akzeptieren')",
+        "[data-action='accept-all']",
+        "#acceptAllCookies",
+        ".cookie-accept-all",
+    ]
+
+    for selector in selectors:
+        try:
+            btn = page.locator(selector).first
+            if btn.is_visible(timeout=2000):
+                btn.click()
+                print(f"  -> Clicked cookie button via: {selector}")
+                return True
+        except Exception:
+            continue
+
+    # Fallback: scan all visible buttons/links for text containing "akzeptieren"
+    try:
+        for btn in page.locator("button, a").all():
+            try:
+                text = btn.inner_text(timeout=1000).strip().lower()
+                if "akzeptieren" in text and btn.is_visible():
+                    btn.click()
+                    print(f"  -> Clicked fallback cookie button: '{text}'")
+                    return True
+            except Exception:
+                continue
+    except Exception:
+        pass
+
+    print("  -> No cookie banner found (may already be accepted).")
+    return False
 
 
-def build_response_record(response: Response):
-    """Build a dict with all relevant response information."""
-    return {
-        "url": response.url,
-        "status": response.status,
-        "status_text": response.status_text,
-        "headers": response.headers,
-        "body": capture_response_safely(response),
-    }
+def fill_field(page, selectors, value, label):
+    """Try multiple selectors to fill a form field, then pick an autocomplete suggestion."""
+    for sel in selectors:
+        try:
+            loc = page.locator(sel).first
+            if loc.is_visible(timeout=2000):
+                loc.click()
+                loc.fill("")
+                loc.type(value, delay=50)
+                print(f"  -> Filled {label} via: {sel}")
+                page.wait_for_timeout(2000)
+
+                # Try to click the first autocomplete suggestion
+                suggestion_selectors = [
+                    ".suggestion-list li:first-child",
+                    ".autocomplete-suggestion:first-child",
+                    "[role='option']:first-child",
+                    "[role='listbox'] [role='option']:first-child",
+                    ".tt-suggestion:first-child",
+                    "ul.suggestions li:first-child",
+                    ".dropdown-menu li:first-child",
+                    ".search-suggestions li:first-child",
+                ]
+                for sug_sel in suggestion_selectors:
+                    try:
+                        sug = page.locator(sug_sel).first
+                        if sug.is_visible(timeout=1000):
+                            sug.click()
+                            print(f"  -> Selected suggestion via: {sug_sel}")
+                            break
+                    except Exception:
+                        continue
+                else:
+                    page.keyboard.press("ArrowDown")
+                    page.wait_for_timeout(500)
+                    page.keyboard.press("Enter")
+                return True
+        except Exception:
+            continue
+    return False
+
+
+def fill_by_position(page, index, value, label):
+    """Fallback: fill the Nth visible text input on the page."""
+    text_inputs = page.locator('input[type="text"], input:not([type])').all()
+    visible = [inp for inp in text_inputs if inp.is_visible(timeout=500)]
+    if index < len(visible):
+        visible[index].click()
+        visible[index].fill("")
+        visible[index].type(value, delay=50)
+        page.wait_for_timeout(2000)
+        page.keyboard.press("ArrowDown")
+        page.wait_for_timeout(300)
+        page.keyboard.press("Enter")
+        print(f"  -> Filled {label} via positional input[{index}]")
+        return True
+    return False
+
+
+def submit_search(page):
+    """Find and click the search/submit button."""
+    selectors = [
+        "button[type='submit']",
+        "button:has-text('Suchen')",
+        "button:has-text('Verbindung suchen')",
+        "button:has-text('Auskunft')",
+        "input[type='submit']",
+        "a:has-text('Suchen')",
+    ]
+    for sel in selectors:
+        try:
+            btn = page.locator(sel).first
+            if btn.is_visible(timeout=2000):
+                btn.click()
+                print(f"  -> Clicked submit via: {sel}")
+                return
+        except Exception:
+            continue
+
+    page.keyboard.press("Enter")
+    print("  -> Submitted via Enter key")
 
 
 def run():
-    captured = []
-    output_file = "vgn_network_capture.json"
+    # Collect raw response objects; we read bodies *after* page interactions
+    # to avoid re-entrancy issues inside the event handler.
+    responses: list[Response] = []
 
     with sync_playwright() as pw:
-        browser = pw.chromium.launch(headless=True)
+        launch_opts = {"headless": True}
+        chromium = (
+            CHROMIUM_PATH
+            or shutil.which("chromium")
+            or shutil.which("chromium-browser")
+        )
+        if chromium:
+            launch_opts["executable_path"] = chromium
+        browser = pw.chromium.launch(**launch_opts)
         context = browser.new_context(
             locale="de-DE",
             user_agent=(
@@ -87,91 +205,22 @@ def run():
         )
         page = context.new_page()
 
-        # -----------------------------------------------------------------
-        # Set up network listener – capture every response
-        # -----------------------------------------------------------------
-        def on_response(response: Response):
-            request = response.request
-            entry = {
-                "timestamp": datetime.now(timezone.utc).isoformat(),
-                "request": build_request_record(request),
-                "response": build_response_record(response),
-            }
-            captured.append(entry)
+        # Collect response references (body is read later)
+        page.on("response", lambda resp: responses.append(resp))
 
-        page.on("response", on_response)
-
-        # -----------------------------------------------------------------
-        # 1. Navigate to vgn.de
-        # -----------------------------------------------------------------
+        # ---- 1. Navigate ----
         print("[1/4] Navigating to https://www.vgn.de ...")
         page.goto("https://www.vgn.de", wait_until="domcontentloaded", timeout=60_000)
         page.wait_for_timeout(3000)
 
-        # -----------------------------------------------------------------
-        # 2. Accept cookies
-        # -----------------------------------------------------------------
+        # ---- 2. Cookies ----
         print("[2/4] Accepting cookies ...")
-        cookie_accepted = False
-
-        # Common cookie-consent button selectors for German sites
-        cookie_selectors = [
-            "button:has-text('Alle akzeptieren')",
-            "button:has-text('Alle Cookies akzeptieren')",
-            "button:has-text('Akzeptieren')",
-            "button:has-text('Alles akzeptieren')",
-            "a:has-text('Alle akzeptieren')",
-            "[data-action='accept-all']",
-            "#acceptAllCookies",
-            ".cookie-accept-all",
-        ]
-
-        for selector in cookie_selectors:
-            try:
-                btn = page.locator(selector).first
-                if btn.is_visible(timeout=2000):
-                    btn.click()
-                    cookie_accepted = True
-                    print(f"  -> Clicked cookie button via: {selector}")
-                    break
-            except Exception:
-                continue
-
-        if not cookie_accepted:
-            # Fallback: try to find any visible button whose text contains
-            # "akzeptieren" (case-insensitive).
-            try:
-                buttons = page.locator("button, a").all()
-                for btn in buttons:
-                    try:
-                        text = btn.inner_text(timeout=1000).strip().lower()
-                        if "akzeptieren" in text and btn.is_visible():
-                            btn.click()
-                            cookie_accepted = True
-                            print(f"  -> Clicked fallback cookie button: '{text}'")
-                            break
-                    except Exception:
-                        continue
-            except Exception:
-                pass
-
-        if not cookie_accepted:
-            print("  -> No cookie banner found (may already be accepted).")
-
+        accept_cookies(page)
         page.wait_for_timeout(2000)
 
-        # -----------------------------------------------------------------
-        # 3. Fill in the route search form
-        # -----------------------------------------------------------------
+        # ---- 3. Fill search form ----
         print("[3/4] Filling route search form ...")
 
-        origin = "Nürnberg, Am Schlag"
-        destination = "Nürnberg, Hauptbahnhof"
-
-        # The VGN homepage / /verbindungen page has origin/destination fields.
-        # Try multiple strategies to find the input fields.
-
-        # Strategy A: Look for labeled inputs or placeholders
         origin_selectors = [
             "input[placeholder*='Von']",
             "input[placeholder*='Start']",
@@ -181,10 +230,8 @@ def run():
             "input[name*='origin']",
             "input[name*='from']",
             "input[name*='Von']",
-            "#origin",
-            "#from",
+            "#origin", "#from",
         ]
-
         dest_selectors = [
             "input[placeholder*='Nach']",
             "input[placeholder*='Ziel']",
@@ -194,159 +241,73 @@ def run():
             "input[name*='destination']",
             "input[name*='to']",
             "input[name*='Nach']",
-            "#destination",
-            "#to",
+            "#destination", "#to",
         ]
 
-        def fill_field(selectors, value, label):
-            """Try multiple selectors to fill a form field."""
-            for sel in selectors:
-                try:
-                    loc = page.locator(sel).first
-                    if loc.is_visible(timeout=2000):
-                        loc.click()
-                        loc.fill("")
-                        loc.type(value, delay=50)
-                        print(f"  -> Filled {label} via: {sel}")
-                        # Wait for autocomplete suggestions and pick the first
-                        page.wait_for_timeout(2000)
-                        # Try to click the first suggestion from any dropdown
-                        suggestion_selectors = [
-                            ".suggestion-list li:first-child",
-                            ".autocomplete-suggestion:first-child",
-                            "[role='option']:first-child",
-                            "[role='listbox'] [role='option']:first-child",
-                            ".tt-suggestion:first-child",
-                            "ul.suggestions li:first-child",
-                            ".dropdown-menu li:first-child",
-                            ".search-suggestions li:first-child",
-                        ]
-                        for sug_sel in suggestion_selectors:
-                            try:
-                                sug = page.locator(sug_sel).first
-                                if sug.is_visible(timeout=1000):
-                                    sug.click()
-                                    print(f"  -> Selected suggestion via: {sug_sel}")
-                                    break
-                            except Exception:
-                                continue
-                        else:
-                            # If no dropdown found, press Enter or Tab
-                            page.keyboard.press("ArrowDown")
-                            page.wait_for_timeout(500)
-                            page.keyboard.press("Enter")
-                        return True
-                except Exception:
-                    continue
-
-            # Strategy B: Fall back to finding text inputs by position
-            # (first visible text input = origin, second = destination)
-            return False
-
-        origin_filled = fill_field(origin_selectors, origin, "origin")
+        origin_ok = fill_field(page, origin_selectors, ORIGIN, "origin")
         page.wait_for_timeout(1000)
-        dest_filled = fill_field(dest_selectors, destination, "destination")
+        dest_ok = fill_field(page, dest_selectors, DESTINATION, "destination")
 
-        # Strategy B: If specific selectors didn't work, try by input position
-        if not origin_filled or not dest_filled:
+        if not origin_ok or not dest_ok:
             print("  -> Trying positional input strategy ...")
-            text_inputs = page.locator(
-                'input[type="text"], input:not([type])'
-            ).all()
-            visible_inputs = []
-            for inp in text_inputs:
-                try:
-                    if inp.is_visible(timeout=500):
-                        visible_inputs.append(inp)
-                except Exception:
-                    continue
-
-            if len(visible_inputs) >= 2:
-                if not origin_filled:
-                    visible_inputs[0].click()
-                    visible_inputs[0].fill("")
-                    visible_inputs[0].type(origin, delay=50)
-                    page.wait_for_timeout(2000)
-                    page.keyboard.press("ArrowDown")
-                    page.wait_for_timeout(300)
-                    page.keyboard.press("Enter")
-                    print(f"  -> Filled origin via positional input[0]")
-
-                page.wait_for_timeout(1000)
-
-                if not dest_filled:
-                    visible_inputs[1].click()
-                    visible_inputs[1].fill("")
-                    visible_inputs[1].type(destination, delay=50)
-                    page.wait_for_timeout(2000)
-                    page.keyboard.press("ArrowDown")
-                    page.wait_for_timeout(300)
-                    page.keyboard.press("Enter")
-                    print(f"  -> Filled destination via positional input[1]")
-            else:
-                print(f"  -> WARNING: Found only {len(visible_inputs)} visible inputs")
+            if not origin_ok:
+                fill_by_position(page, 0, ORIGIN, "origin")
+            page.wait_for_timeout(1000)
+            if not dest_ok:
+                fill_by_position(page, 1, DESTINATION, "destination")
 
         page.wait_for_timeout(1000)
 
-        # -----------------------------------------------------------------
-        # 4. Submit the search
-        # -----------------------------------------------------------------
+        # ---- 4. Submit ----
         print("[4/4] Submitting search ...")
+        submit_search(page)
 
-        submit_selectors = [
-            "button[type='submit']",
-            "button:has-text('Suchen')",
-            "button:has-text('Verbindung suchen')",
-            "button:has-text('Auskunft')",
-            "input[type='submit']",
-            "a:has-text('Suchen')",
-        ]
-
-        submitted = False
-        for sel in submit_selectors:
-            try:
-                btn = page.locator(sel).first
-                if btn.is_visible(timeout=2000):
-                    btn.click()
-                    submitted = True
-                    print(f"  -> Clicked submit via: {sel}")
-                    break
-            except Exception:
-                continue
-
-        if not submitted:
-            # Fallback: press Enter
-            page.keyboard.press("Enter")
-            print("  -> Submitted via Enter key")
-
-        # Wait for results / XHR responses
         print("Waiting for responses ...")
         page.wait_for_timeout(8000)
 
-        # Take a screenshot for debugging
+        # Take a debug screenshot
         page.screenshot(path="vgn_result_screenshot.png", full_page=True)
         print("Screenshot saved to vgn_result_screenshot.png")
 
+        # ---- Build captured data (read bodies now that page is idle) ----
+        print("Reading response bodies ...")
+        captured = []
+        for resp in responses:
+            req = resp.request
+            captured.append({
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "request": {
+                    "url": req.url,
+                    "method": req.method,
+                    "headers": req.headers,
+                    "post_data": req.post_data,
+                    "resource_type": req.resource_type,
+                    "is_navigation_request": req.is_navigation_request(),
+                },
+                "response": {
+                    "url": resp.url,
+                    "status": resp.status,
+                    "status_text": resp.status_text,
+                    "headers": resp.headers,
+                    "body": read_body(resp),
+                },
+            })
+
         browser.close()
 
-    # -----------------------------------------------------------------
-    # Write captured data to JSON
-    # -----------------------------------------------------------------
-    # Separate XHR/Fetch from other resource types for clarity
+    # ---- Write JSON output ----
     xhr_entries = [
-        e for e in captured
-        if e["request"]["resource_type"] in ("xhr", "fetch")
+        e for e in captured if e["request"]["resource_type"] in ("xhr", "fetch")
     ]
     other_entries = [
-        e for e in captured
-        if e["request"]["resource_type"] not in ("xhr", "fetch")
+        e for e in captured if e["request"]["resource_type"] not in ("xhr", "fetch")
     ]
 
     output = {
         "metadata": {
             "captured_at": datetime.now(timezone.utc).isoformat(),
-            "origin": origin,
-            "destination": destination,
+            "origin": ORIGIN,
+            "destination": DESTINATION,
             "total_requests": len(captured),
             "xhr_fetch_requests": len(xhr_entries),
             "other_requests": len(other_entries),
@@ -355,12 +316,12 @@ def run():
         "other_requests": other_entries,
     }
 
-    with open(output_file, "w", encoding="utf-8") as f:
+    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         json.dump(output, f, indent=2, ensure_ascii=False, default=make_serializable)
 
     print(f"\nDone! Captured {len(captured)} total responses "
           f"({len(xhr_entries)} XHR/Fetch).")
-    print(f"Results written to {output_file}")
+    print(f"Results written to {OUTPUT_FILE}")
 
 
 if __name__ == "__main__":
